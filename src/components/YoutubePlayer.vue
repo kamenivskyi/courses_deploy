@@ -1,5 +1,5 @@
 <template>
-  <div id="youtube-player" class="youtube-player"></div>
+  <div id="youtube-player"></div>
 </template>
 
 <script setup lang="ts">
@@ -13,8 +13,18 @@ let timer;
 
 const timerCount = ref(0);
 
-const IS_PLAYING_CODE = 1;
-const IS_PAUSED_CODE = 2;
+const PlayerState = {
+  ENDED: 0,
+  PLAYING: 1,
+  PAUSED: 2,
+}
+
+const stateHandlers = {
+  [PlayerState.PLAYING]: handlePlayingState,
+  [PlayerState.PAUSED]: handlePausedState,
+  [PlayerState.ENDED]: handleEndedState,
+};
+
 const MINUTE = 60;
 
 const store = useLessonsStore();
@@ -59,16 +69,28 @@ function setTimerToDefault() {
 }
 
 function onPlayerStateChange(event) {
-  if (event.data === IS_PLAYING_CODE) {
-    runTimer();
+  console.log('event: ', event);
 
-    console.log('Click play');
-  } else if (event.data === IS_PAUSED_CODE) {
-    console.log('Click pause');
-    stopInterval();
-
-    // removeInterval();
+  const stateHandler = stateHandlers[event.data];
+  
+  if (stateHandler) {
+    stateHandler();
   }
+}
+
+function handlePlayingState() {
+  runTimer();
+  console.log('Click play');
+}
+
+function handlePausedState() {
+  console.log('Click pause');
+  stopInterval();
+}
+
+function handleEndedState() {
+  console.log('ended')
+  stopInterval();
 }
 
 function notifyAvailableNewLesson() {
@@ -80,6 +102,7 @@ function notifyAvailableNewLesson() {
 
 function runTimer() {
   clearInterval(timer);
+  console.log('runTimer: ', timerCount.value);
 
   timer = setInterval(() => {
     if (timerCount.value >= store.selectedLesson?.video_time * MINUTE) {
