@@ -2,10 +2,10 @@
   <div class="q-pa-sm">
     <CurrentEpisode />
     <q-page class="row">
-      <div class="col">
+      <div class="col-xs-12 col-md-6">
         <EpisodeDescription />
       </div>
-      <div class="col">
+      <div class="col-xs-12 col-md-6">
         <EpisodesTabs />
       </div>
     </q-page>

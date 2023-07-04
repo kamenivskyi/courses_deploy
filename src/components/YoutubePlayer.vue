@@ -1,5 +1,5 @@
 <template>
-  <div id="youtube-player"></div>
+  <div id="youtube-player" class="youtube-player"></div>
 </template>
 
 <script setup lang="ts">
